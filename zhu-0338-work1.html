@@ -4,107 +4,328 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>我的第一个网页</title>
-
     <style>
+        /* ===== 调色板：想换颜色只改这里 ===== */
+        :root {
+            --violet: #7c3aed;
+            --pink:   #ec4899;
+            --orange: #f59e0b;
+            --teal:   #14b8a6;
+            --blue:   #3b82f6;
+            --ink:    #1f2937;
+            --muted:  #5b6472;
+            --radius: 20px;
+            --shadow: 0 10px 30px rgba(31, 41, 55, .10);
+            --shadow-lg: 0 18px 45px rgba(124, 58, 237, .22);
+        }
+        * { box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
         body {
             margin: 0;
-            font-family: Arial, sans-serif;
-            background-color: #f5f5f5;
-            color: #333;
+            font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
+            color: var(--ink);
+            line-height: 1.75;
+            min-height: 100vh;
+            /* 彩色光斑背景 */
+            background:
+                radial-gradient(1000px 600px at 8% -10%,  #e9d5ff 0%, transparent 60%),
+                radial-gradient(900px 520px  at 100% 0%,  #bfdbfe 0%, transparent 55%),
+                radial-gradient(900px 600px  at 50% 115%, #fed7aa 0%, transparent 60%),
+                #f7f7fb;
+            background-attachment: fixed;
         }
-
-        header {
-            background-color: #333;
-            color: white;
-            padding: 20px;
+        /* ===== 顶部彩色光带 ===== */
+        .rainbow-bar {
+            height: 6px;
+            background: linear-gradient(90deg, #7c3aed, #ec4899, #f59e0b, #14b8a6, #3b82f6, #7c3aed);
+            background-size: 300% 100%;
+            animation: slide 8s linear infinite;
+        }
+        @keyframes slide {
+            from { background-position: 0% 0; }
+            to   { background-position: 300% 0; }
+        }
+        /* ===== 头部：流动渐变 ===== */
+        header.hero {
+            position: relative;
+            overflow: hidden;
             text-align: center;
+            padding: 72px 20px 84px;
+            color: #fff;
+            background: linear-gradient(120deg, #6d28d9, #db2777, #f59e0b, #0ea5e9, #6d28d9);
+            background-size: 300% 300%;
+            animation: gradientMove 16s ease infinite;
         }
-
-        nav {
-            background-color: #555;
-            text-align: center;
-            padding: 10px;
+        @keyframes gradientMove {
+            0%   { background-position: 0% 50%; }
+            50%  { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
-
-        nav a {
-            color: white;
+        /* 头部的装饰光晕 */
+        header.hero::before,
+        header.hero::after {
+            content: "";
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(10px);
+            pointer-events: none;
+        }
+        header.hero::before {
+            width: 260px; height: 260px; top: -90px; left: -60px;
+            background: radial-gradient(circle, rgba(255,255,255,.55), transparent 70%);
+        }
+        header.hero::after {
+            width: 320px; height: 320px; bottom: -140px; right: -80px;
+            background: radial-gradient(circle, rgba(255,255,255,.35), transparent 70%);
+        }
+        .badge {
+            display: inline-block;
+            margin: 0 0 14px;
+            padding: 6px 16px;
+            font-size: 14px;
+            letter-spacing: .5px;
+            background: rgba(255, 255, 255, .22);
+            border: 1px solid rgba(255, 255, 255, .45);
+            border-radius: 999px;
+            backdrop-filter: blur(4px);
+        }
+        header.hero h1 {
+            position: relative;
+            margin: 0 0 10px;
+            font-size: clamp(30px, 5vw, 48px);
+            letter-spacing: 2px;
+            text-shadow: 0 6px 26px rgba(0, 0, 0, .28);
+        }
+        header.hero .sub {
+            position: relative;
+            margin: 0;
+            font-size: clamp(15px, 2.2vw, 19px);
+            color: rgba(255, 255, 255, .92);
+        }
+        .hero-actions {
+            position: relative;
+            margin-top: 30px;
+            display: flex;
+            gap: 14px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .btn {
+            display: inline-block;
+            padding: 11px 26px;
+            font-size: 15px;
             text-decoration: none;
-            margin: 0 20px;
+            border-radius: 999px;
+            transition: transform .2s ease, box-shadow .2s ease, background .2s ease;
         }
-
+        .btn-primary {
+            color: #4c1d95;
+            font-weight: 700;
+            background: #fff;
+            box-shadow: 0 10px 24px rgba(0, 0, 0, .22);
+        }
+        .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 16px 30px rgba(0, 0, 0, .28); }
+        .btn-ghost {
+            color: #fff;
+            border: 2px solid rgba(255, 255, 255, .75);
+        }
+        .btn-ghost:hover { background: rgba(255, 255, 255, .2); transform: translateY(-3px); }
+        /* ===== 导航：毛玻璃悬浮胶囊 ===== */
+        nav {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            padding: 12px 16px;
+            background: rgba(255, 255, 255, .78);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(124, 58, 237, .12);
+            box-shadow: 0 6px 20px rgba(31, 41, 55, .06);
+        }
+        nav a {
+            padding: 7px 20px;
+            font-size: 15px;
+            color: var(--ink);
+            text-decoration: none;
+            border-radius: 999px;
+            transition: color .2s ease, background .2s ease, transform .2s ease;
+        }
+        nav a:nth-child(1):hover { color: #fff; background: linear-gradient(135deg, #7c3aed, #a855f7); transform: translateY(-2px); }
+        nav a:nth-child(2):hover { color: #fff; background: linear-gradient(135deg, #ec4899, #f472b6); transform: translateY(-2px); }
+        nav a:nth-child(3):hover { color: #fff; background: linear-gradient(135deg, #f59e0b, #fbbf24); transform: translateY(-2px); }
+        /* ===== 主体 ===== */
         main {
-            width: 80%;
+            width: 88%;
             max-width: 900px;
-            margin: 30px auto;
+            margin: 40px auto 60px;
         }
-
         .card {
-            background-color: white;
-            padding: 30px;
-            margin-bottom: 20px;
-            border-radius: 10px;
+            position: relative;
+            background: #fff;
+            padding: 30px 32px 32px;
+            margin-bottom: 26px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            transition: transform .25s ease, box-shadow .25s ease;
         }
-
-        button {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
+        /* 卡片顶部彩色条 */
+        .card::before {
+            content: "";
+            position: absolute;
+            inset: 0 0 auto 0;
+            height: 6px;
         }
-
+        .card:hover { transform: translateY(-5px); box-shadow: var(--shadow-lg); }
+        .card.violet::before { background: linear-gradient(90deg, #7c3aed, #c084fc); }
+        .card.teal::before   { background: linear-gradient(90deg, #0d9488, #2dd4bf); }
+        .card.amber::before  { background: linear-gradient(90deg, #f59e0b, #fcd34d); }
+        .card h2 {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 0 0 16px;
+            font-size: 23px;
+            letter-spacing: .5px;
+        }
+        .card.violet h2 { color: #6d28d9; }
+        .card.teal h2   { color: #0f766e; }
+        .card.amber h2  { color: #b45309; }
+        .icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 42px;
+            height: 42px;
+            font-size: 21px;
+            border-radius: 14px;
+            flex: 0 0 auto;
+        }
+        .card.violet .icon { background: linear-gradient(135deg, #ede9fe, #ddd6fe); }
+        .card.teal .icon   { background: linear-gradient(135deg, #ccfbf1, #99f6e4); }
+        .card.amber .icon  { background: linear-gradient(135deg, #fef3c7, #fde68a); }
+        .card p { margin: 0; color: var(--muted); }
+        /* 兴趣标签 */
+        .chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        .chips li {
+            padding: 9px 20px;
+            font-size: 15px;
+            font-weight: 600;
+            color: #fff;
+            border-radius: 999px;
+            box-shadow: 0 6px 16px rgba(31, 41, 55, .14);
+            transition: transform .2s ease;
+        }
+        .chips li:hover { transform: translateY(-3px) scale(1.04); }
+        .chips li:nth-child(1) { background: linear-gradient(135deg, #3b82f6, #60a5fa); }
+        .chips li:nth-child(2) { background: linear-gradient(135deg, #8b5cf6, #a78bfa); }
+        .chips li:nth-child(3) { background: linear-gradient(135deg, #ec4899, #f472b6); }
+        /* 技能进度条 */
+        .skills { margin-top: 22px; }
+        .skill { margin-bottom: 14px; }
+        .skill span {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--muted);
+        }
+        .track {
+            height: 12px;
+            border-radius: 999px;
+            background: #eef0f5;
+            overflow: hidden;
+        }
+        .track i {
+            display: block;
+            height: 100%;
+            border-radius: 999px;
+            animation: grow 1.4s ease-out both;
+        }
+        .html i  { width: 60%; background: linear-gradient(90deg, #f59e0b, #fb923c); }
+        .css  i  { width: 40%; background: linear-gradient(90deg, #3b82f6, #22d3ee); }
+        .js   i  { width: 20%; background: linear-gradient(90deg, #8b5cf6, #ec4899); }
+        @keyframes grow { from { width: 0; } }
+        /* ===== 页脚 ===== */
         footer {
+            margin-top: 40px;
+            padding: 30px 20px;
             text-align: center;
-            padding: 20px;
-            background-color: #333;
-            color: white;
+            color: #e5e7eb;
+            background: linear-gradient(120deg, #2e1065, #831843, #7c2d12, #2e1065);
+            background-size: 300% 300%;
+            animation: gradientMove 18s ease infinite;
+        }
+        footer p { margin: 0 0 6px; }
+        footer .hearts { font-size: 15px; letter-spacing: 6px; }
+        /* ===== 手机适配 ===== */
+        @media (max-width: 600px) {
+            header.hero { padding: 54px 16px 64px; }
+            main { width: 92%; margin: 28px auto 40px; }
+            .card { padding: 24px 20px 26px; }
+            .card h2 { font-size: 20px; }
+            nav a { padding: 6px 14px; font-size: 14px; }
         }
     </style>
 </head>
-
 <body>
-
-    <header>
+    <div class="rainbow-bar"></div>
+    <header class="hero">
+        <p class="badge">✨ HTML + CSS 练习作品</p>
         <h1>我的第一个网页</h1>
-        <p>欢迎来到我的个人网站</p>
+        <p class="sub">欢迎来到我的个人网站 🌈</p>
+        <div class="hero-actions">
+            <a class="btn btn-primary" href="#about">开始逛逛 →</a>
+            <a class="btn btn-ghost" href="#interests">看看我的兴趣</a>
+        </div>
     </header>
-
     <nav>
         <a href="#">首页</a>
-        <a href="#">关于我</a>
-        <a href="#">我的兴趣</a>
+        <a href="#about">关于我</a>
+        <a href="#interests">我的兴趣</a>
     </nav>
-
     <main>
-
-        <div class="card">
-            <h2>关于我</h2>
+        <div class="card violet" id="about">
+            <h2><span class="icon">👋</span>关于我</h2>
             <p>
                 你好！这是我的第一个 HTML 网页。
                 我正在学习网页设计和编程。
             </p>
         </div>
-
-        <div class="card">
-            <h2>我的兴趣</h2>
-            <ul>
-                <li>计算机</li>
-                <li>编程</li>
-                <li>游戏</li>
+        <div class="card teal" id="interests">
+            <h2><span class="icon">🎮</span>我的兴趣</h2>
+            <ul class="chips">
+                <li>💻 计算机</li>
+                <li>⌨️ 编程</li>
+                <li>🎮 游戏</li>
             </ul>
         </div>
-
-        <div class="card">
-            <h2>我的目标</h2>
+        <div class="card amber" id="goal">
+            <h2><span class="icon">🎯</span>我的目标</h2>
             <p>
                 学习 HTML、CSS 和 JavaScript，
                 做出属于自己的网页。
-                   </div>
-
+            </p>
+            <div class="skills">
+                <div class="skill html"><span>HTML · 60%</span><div class="track"><i></i></div></div>
+                <div class="skill css"><span>CSS · 40%</span><div class="track"><i></i></div></div>
+                <div class="skill js"><span>JavaScript · 20%</span><div class="track"><i></i></div></div>
+            </div>
+        </div>
     </main>
-
     <footer>
         <p>© 2026 我的第一个网页</p>
+        <p class="hearts">💜 💙 💚 🧡</p>
     </footer>
-
 </body>
 </html>
